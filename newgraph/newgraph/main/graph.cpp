@@ -43,6 +43,10 @@ void Graph::removeEdge(Node* begin, Node* end) {
     if (end) end->removeNeighbour(begin);
 }
 
+bool Graph::contains(Node* node) const {
+    return nodes.find(node) != nodes.end();
+}
+
 Graph::iterator Graph::begin() const {
     return nodes.begin();
 }

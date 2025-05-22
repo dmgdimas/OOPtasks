@@ -3,6 +3,7 @@
 #include "graph.h"
 #include <queue>
 #include <set>
+#include <vector>
 
 class BFS {
     const Graph& graph;
@@ -10,7 +11,7 @@ class BFS {
 public:
     explicit BFS(const Graph& graph);
     bool connected(Node* start, Node* target);
-    std::set<Node*> getComponent(Node* start);
+    std::vector<Graph*> getComponent(Node* start);
 };
 
 void writeGraph(const Graph& graph, const std::string& prefix);

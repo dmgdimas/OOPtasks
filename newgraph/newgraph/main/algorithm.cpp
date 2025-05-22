@@ -2,6 +2,7 @@
 #include <fstream>
 #include <queue>
 #include <set>
+#include <vector>
 
 BFS::BFS(const Graph& graph) : graph(graph) {}
 
@@ -29,9 +30,9 @@ bool BFS::connected(Node* start, Node* target) {
     return false;
 }
 
-std::set<Node*> BFS::getComponent(Node* start) {
-    std::set<Node*> component;
-    if (!start) return component;
+std::vector<Graph*> BFS::getComponent(Node* start) {
+    std::vector<Graph*> components;
+    if (!start) return components;
 
     std::queue<Node*> q;
     std::set<Node*> visited;
@@ -41,8 +42,6 @@ std::set<Node*> BFS::getComponent(Node* start) {
 
     while (!q.empty()) {
         Node* current = q.front(); q.pop();
-        component.insert(current);
-
         for (auto it = current->nb_begin(); it != current->nb_end(); ++it) {
             if (visited.find(*it) == visited.end()) {
                 visited.insert(*it);
@@ -50,9 +49,15 @@ std::set<Node*> BFS::getComponent(Node* start) {
             }
         }
     }
+    Graph* componentGraph = new Graph();
+    for (Node* node : visited) {
+        componentGraph->addNode(node);
+    }
+    components.push_back(componentGraph);
 
-    return component;
+    return components;
 }
+
 
 void writeGraph(const Graph& graph, const std::string& prefix) {
     std::set<Node*> unvisited(graph.begin(), graph.end());
@@ -61,22 +66,27 @@ void writeGraph(const Graph& graph, const std::string& prefix) {
 
     while (!unvisited.empty()) {
         Node* start = *unvisited.begin();
-        std::set<Node*> component = bfs.getComponent(start);
+        std::vector<Graph*> componentGraphs = bfs.getComponent(start);
 
-        std::string fileName = prefix + std::to_string(componentIndex++) + ".txt";
-        std::ofstream out(fileName);
-        out << "Source\tTarget\n";
+        for (Graph* comp : componentGraphs) {
+            std::string fileName = prefix + std::to_string(componentIndex++) + ".txt";
+            std::ofstream out(fileName);
+            out << "Source\tTarget\n";
 
-        for (Node* node : component) {
-            for (auto it = node->nb_begin(); it != node->nb_end(); ++it) {
-                if (component.count(*it) && node->getName() < (*it)->getName()) {
-                    out << node->getName() << "\t" << (*it)->getName() << "\n";
+            
+            for (Node* node : *comp) {
+                for (auto it = node->nb_begin(); it != node->nb_end(); ++it) {
+                    if (comp->contains(*it) && node->getName() < (*it)->getName()) {
+                        out << node->getName() << "\t" << (*it)->getName() << "\n";
+                    }
                 }
             }
-        }
 
-        for (Node* n : component) {
-            unvisited.erase(n);
+            for (Node* n : *comp) {
+                unvisited.erase(n);
+            }
+
+            delete comp;  
         }
     }
 }

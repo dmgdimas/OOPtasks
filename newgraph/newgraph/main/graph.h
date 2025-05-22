@@ -6,7 +6,6 @@
 
 class Graph {
     std::set<Node*> nodes;
-
     Node* findNode(const std::string& name) const;
 
 public:
@@ -20,6 +19,7 @@ public:
     void removeNode(Node* node);
     void addEdge(Node* begin, Node* end);
     void removeEdge(Node* begin, Node* end);
+    bool contains(Node* node) const;
 
     iterator begin() const;
     iterator end() const;

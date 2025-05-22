@@ -8,18 +8,27 @@
 
 
 
-int main() {
-    Graph testGraph("testgraph.txt");
-    std::cout << "Working with testgraph.txt" << std::endl;
-    writeGraph(testGraph, "testgraph");
+int main(int argc, char* argv[]) {
+    if (argc < 3) {
+        std::cerr << "Usage: " << argv[0] << " <txt_file> <csv_file>" << std::endl;
+        return 1;
+    }
 
-    Graph bigGraph("1000.csv");
-    std::cout << "Working with 1000.csv" << std::endl;
-    writeGraph(bigGraph, "1000");
+    Graph txtGraph(argv[1]);
+    std::cout << "Working with " << argv[1] << std::endl;
+    writeGraph(txtGraph, argv[1]);
+
+    Graph csvGraph(argv[2]);
+    std::cout << "Working with " << argv[2] << std::endl;
+    writeGraph(csvGraph, argv[2]);
 
     std::cout << "All graphs are written successfully" << std::endl;
     return 0;
 }
+
+//g++ main.cpp graph.cpp node.cpp algorithm.cpp -o main.exe
+//.\main.exe testgraph.txt 1000.csv
+
 // Запуск программы: CTRL+F5 или меню "Отладка" > "Запуск без отладки"
 // Отладка программы: F5 или меню "Отладка" > "Запустить отладку"
 
